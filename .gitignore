@@ -51,8 +51,3 @@ build/
 coverage/
 
 # =========================
-# DATABASE / DUMPS (optionnel)
-# =========================
-*.sql
-*.sqlite
-*.db

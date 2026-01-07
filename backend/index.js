@@ -5,6 +5,10 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
+const { requireAuth } = require("./middlewares/auth");
+const { requireRole } = require("./middlewares/role");
+const authRoutes = require("./routes/auth.route");
+
 
 // On importe le pool MySQL
 const { pool } = require("./db");
@@ -27,6 +31,21 @@ app.use(express.json());
 // Log des requêtes (super utile pour debug)
 app.use(morgan("dev"));
 
+app.use("/auth", authRoutes);
+
+
+
+// Route de test protégée
+app.get("/protected", requireAuth, (req, res) => {
+  // Si on arrive ici, c'est que le token est valide
+  res.json({ ok: true, user: req.user });
+});
+
+// Route de test: accessible uniquement si connecté ET role operator/admin
+app.get("/ops-only", requireAuth, requireRole(["operator", "admin"]), (req, res) => {
+  res.json({ ok: true, message: "Bienvenue opérateur/admin", user: req.user });
+});
+
 
 /**
  * ===== Route /health =====
@@ -36,25 +55,13 @@ app.use(morgan("dev"));
  */
 app.get("/health", async (req, res) => {
   try {
-    // SELECT 1 = test minimal : si ça passe, la DB répond
     await pool.query("SELECT 1");
-
-    return res.json({
-      ok: true,
-      api: "ok",
-      db: "ok",
-      dbName: process.env.DB_NAME
-    });
+    return res.json({ ok: true, api: "ok", db: "ok", dbName: process.env.DB_NAME });
   } catch (e) {
-    // Ici : problème de connexion DB (host/port/user/password/db_name)
-    return res.status(500).json({
-      ok: false,
-      api: "ok",
-      db: "ko",
-      message: e.message
-    });
+    return res.status(500).json({ ok: false, api: "ok", db: "ko", message: e.message });
   }
 });
+
 
 /**
  * ===== Démarrage serveur =====
