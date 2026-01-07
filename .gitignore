@@ -1,0 +1,58 @@
+# =========================
+# GLOBAL
+# =========================
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# =========================
+# ENV (SÉCURITÉ)
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# NODE (backend & frontend)
+# =========================
+node_modules/
+dist/
+build/
+.cache/
+.vite/
+
+# =========================
+# IDE / EDITORS
+# =========================
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# =========================
+# OS / TEMP
+# =========================
+*.tmp
+*.temp
+*.swp
+
+# =========================
+# COVERAGE / TESTS
+# =========================
+coverage/
+
+# =========================
+# DATABASE / DUMPS (optionnel)
+# =========================
+*.sql
+*.sqlite
+*.db
