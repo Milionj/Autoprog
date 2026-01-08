@@ -10,6 +10,7 @@ const { requireRole } = require("./middlewares/role");
 const authRoutes = require("./routes/auth.route");
 const sensorsRoutes = require("./routes/sensors.routes");
 const measurementsRoutes = require("./routes/measurements.routes");
+const alarmsRoutes = require("./routes/alarms.routes");
 
 
 // On importe le pool MySQL
@@ -39,6 +40,7 @@ app.use("/sensors", sensorsRoutes);
 
 app.use("/measurements", measurementsRoutes);
 
+app.use("/alarms", alarmsRoutes);
 
 
 // Route de test protégée

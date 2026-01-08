@@ -1,6 +1,6 @@
 const express = require("express");
-const {pool} = require("../db");
-const { requireAuth} =require("../middlewares");
+const { pool } = require("../db");
+const { requireAuth } = require("../middlewares/auth");
 
 const router = express.Router();
 
@@ -10,7 +10,7 @@ const router = express.Router();
  * On fait un LEFT JOIN pour garder les capteurs même s’ils n’ont pas encore de mesures.
  */
 
-router.get("/lastest", requireAuth, async (requireAuth, res) => {
+router.get("/latest", requireAuth, async (req, res) => {
     try {
         const [rows] = await pool.query(
         `
