@@ -8,6 +8,8 @@ const morgan = require("morgan");
 const { requireAuth } = require("./middlewares/auth");
 const { requireRole } = require("./middlewares/role");
 const authRoutes = require("./routes/auth.route");
+const sensorsRoutes = require("./routes/sensors.routes");
+
 
 
 // On importe le pool MySQL
@@ -32,6 +34,9 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 app.use("/auth", authRoutes);
+
+app.use("/sensors", sensorsRoutes);
+
 
 
 
