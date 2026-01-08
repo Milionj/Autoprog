@@ -9,7 +9,7 @@ const { requireAuth } = require("./middlewares/auth");
 const { requireRole } = require("./middlewares/role");
 const authRoutes = require("./routes/auth.route");
 const sensorsRoutes = require("./routes/sensors.routes");
-
+const measurementsRoutes = require("./routes/measurements.routes");
 
 
 // On importe le pool MySQL
@@ -37,6 +37,7 @@ app.use("/auth", authRoutes);
 
 app.use("/sensors", sensorsRoutes);
 
+app.use("/measurements", measurementsRoutes);
 
 
 
