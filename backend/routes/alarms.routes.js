@@ -1,6 +1,7 @@
 const express = require("express");
 const { pool } = require("../db");
 const { requireAuth } = require("../middlewares/auth");
+const { requireRole } = require("../middlewares/role");
 
 const router = express.Router();
 
@@ -35,6 +36,45 @@ router.get("/", requireAuth, async (req, res) => {
         console.error("GET /alarms error:", e);
         return res.status(500).json({ message: "Erreur serveur"});
     }
+});
+
+router.patch("/:id/ack", requireAuth, requireRole(["operator", "admin"]), async (req, res) => {
+  try {
+    // 1) On récupère l'id depuis l'URL
+    const id = Number(req.params.id);
+
+    // 2) Validation simple
+    if (!Number.isInteger(id) || id <= 0) {
+      return res.status(400).json({ message: "ID invalide" });
+    }
+
+    /**
+     * 3) Update de l'alarme
+     * - On met est_acquittee à 1
+     * - On note la date d'acquittement
+     * - On enregistre quel user a acquitté (req.user.sub)
+     * - On évite de re-acquitter une alarme déjà acquittée (est_acquittee = 0)
+     */
+    const [result] = await pool.query(
+      `UPDATE alarmes
+       SET est_acquittee = 1,
+           date_acquittement = NOW(),
+           id_utilisateur = :userId
+       WHERE id_alarmes = :id AND est_acquittee = 0`,
+      { id, userId: req.user.sub }
+    );
+
+    // 4) Si aucune ligne modifiée : soit id inexistant, soit déjà acquittée
+    
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Alarme introuvable ou déjà acquittée" });
+    }
+
+    return res.json({ message: "Alarme acquittée", id });
+  } catch (e) {
+    console.error("PATCH /alarms/:id/ack error:", e);
+    return res.status(500).json({ message: "Erreur serveur" });
+  }
 });
 
 module.exports = router;
