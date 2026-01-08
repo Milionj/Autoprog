@@ -11,6 +11,8 @@ const authRoutes = require("./routes/auth.route");
 const sensorsRoutes = require("./routes/sensors.routes");
 const measurementsRoutes = require("./routes/measurements.routes");
 const alarmsRoutes = require("./routes/alarms.routes");
+const commandsRoutes = require("./routes/commands.routes");
+const { startSimulator } = require("./simulator");
 
 
 // On importe le pool MySQL
@@ -42,6 +44,8 @@ app.use("/measurements", measurementsRoutes);
 
 app.use("/alarms", alarmsRoutes);
 
+app.use("/commands", commandsRoutes);
+
 
 // Route de test protégée
 app.get("/protected", requireAuth, (req, res) => {
@@ -70,7 +74,7 @@ app.get("/health", async (req, res) => {
   }
 });
 
-
+startSimulator();
 /**
  * ===== Démarrage serveur =====
  */
